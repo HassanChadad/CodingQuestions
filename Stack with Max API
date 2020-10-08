@@ -1,0 +1,105 @@
+Question:
+------------------------------------
+Implement a Stack data structure that supports the following operations
+1. push(x) pushes element to the stack
+2. pop() pop element from the stack
+3. max() returns the maximum element in the stack
+
+
+Stack Properties:
+---------------------------
+1. Last In First Out
+2. push and pop should have constant time complexity
+3. allows redundancy of elements
+
+
+***** Main Problem is how we can keep track of the maximum number in the stack in constant time??
+
+Solution:
+----------------------------
+If we are allowed to user stack then we can use stack otherwise we can use linkedlist or arraylist (up to you).
+Whenever we push a new number to the stack we need to keep track of the current max state at the point we pushed the number. To approach this, we can create a node class that
+saves the value that will be pushed along with the state of maximum. 
+For example:
+1. push(6) so the node will save (value = 6, max = 6).
+2. push(5) so the node with save (value = 5, max = 6 because 6 > 5)
+3. pop 5 -> then remove node (5) from the stack. Then check the peek node and update the max to the peek node's max
+
+Code:
+-----------------------------
+import java.util.*;
+
+public class HelloWorld {
+
+     public static void main(String []args){
+        MaxStack s = new MaxStack();
+        s.push(4);
+        s.push(2);
+        s.push(1);
+        s.push(6);
+        s.push(3);
+        s.push(5);
+        
+        System.out.println("Max is "+s.max()+"\n");
+        
+        for(int i = 1; i <= 6; i++){
+            System.out.println("Popped "+s.pop());
+            System.out.println("Max is "+s.max());
+            System.out.println("----------------");
+        }
+     }
+}
+
+class MaxStack {
+    
+    private Deque<Node> stack;
+    private int max;
+    
+    public MaxStack (){
+        stack = new ArrayDeque<>();
+        max = Integer.MIN_VALUE;
+    }
+    
+    public void push (int x){
+        if(x > max){
+            max = x;
+        }
+        
+        // create a node to save x and max at the current state
+        Node node = new Node(x, max); 
+        
+        stack.push(node); // will be added at the end
+    }
+    
+    public Integer pop(){
+        if(stack.isEmpty()){
+            return null;
+        }
+        
+        Node node = stack.pop(); // remove first element
+        if(node.max == max){
+            if(stack.isEmpty()){
+                max = Integer.MIN_VALUE;
+            }
+            else {
+                max = stack.peek().max;
+            }
+        }
+        
+        return node.value;
+    }
+    
+    public int max() {
+        return max;
+    }
+}
+
+class Node {
+    
+    int value, max;
+    
+    public Node(int val, int max){
+        value = val;
+        this.max = max;
+    }
+}
